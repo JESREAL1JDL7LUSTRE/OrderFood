@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from urllib.parse import urlparse
 from dotenv import load_dotenv
-import os
+from os import getenv
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,12 +23,12 @@ load_dotenv()
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv('DEBUG', 'FALSE') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOST', '127.0.0.1,localhost').split(',')
 
 
 # Application definition
@@ -150,12 +150,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://192.168.1.9:3000',
-]
+CORS_ALLOWED_ORIGINS = getenv('DJANGO_CORS_ALLOWED_ORIGINS', '127.0.0.1,localhost').split(',')
 
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = getenv('CORS_ALLOW_CREDENTIALS', 'TRUE') == 'False'
 
 AUTH_USER_MODEL = "AccountsAuth.User"
 
@@ -163,7 +160,7 @@ AUTH_USER_MODEL = "AccountsAuth.User"
 import cloudinary
 
 # Get Cloudinary URL from .env file
-CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+CLOUDINARY_URL = getenv("CLOUDINARY_URL")
 
 # Configure Cloudinary
 cloudinary.config(cloudinary_url=CLOUDINARY_URL)
