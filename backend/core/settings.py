@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'cloudinary',
     'AccountAuth',
+    'Payment',
+    'Store',
+    'SocialMedia',
 ]
 
 MIDDLEWARE = [
@@ -154,7 +157,7 @@ CORS_ALLOWED_ORIGINS = getenv('DJANGO_CORS_ALLOWED_ORIGINS', '127.0.0.1,localhos
 
 CORS_ALLOW_CREDENTIALS = getenv('CORS_ALLOW_CREDENTIALS', 'TRUE') == 'False'
 
-AUTH_USER_MODEL = "AccountsAuth.User"
+AUTH_USER_MODEL = "AccountAuth.User"
 
 #cloudinary
 import cloudinary
