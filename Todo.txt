@@ -1,0 +1,1 @@
+use Brevo for email service with anymail
