@@ -1,1 +1,3 @@
 use Brevo for email service with anymail
+
+custom domain or vercel?
