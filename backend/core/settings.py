@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'djoser',
+    'anymail',
     'cloudinary',
     'AccountAuth',
     'Payment',
@@ -181,3 +182,10 @@ DJOSER = {
     'LOGOUT_ON_PASSWORD_CHANGE': True,
     'TOKEN_MODEL': None,
 }
+
+EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
+ANYMAIL = {
+    "BREVO_API_KEY": getenv("BREVO_API_KEY"),
+}
+DEFAULT_FROM_EMAIL = getenv("DEFAULT_FROM_EMAIL")
+BREVO_API_URL = getenv("BREVO_API_URL")

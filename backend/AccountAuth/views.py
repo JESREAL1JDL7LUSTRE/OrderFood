@@ -6,6 +6,8 @@ from AccountAuth.serializers import UserSerializer
 from .models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import viewsets, permissions, generics
+from django.http import JsonResponse
+from .sendEmail import send_email
 
 @login_required
 def become_seller(request):
@@ -42,4 +44,15 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
-    
+
+def send_test_email(request):
+    subject = "Welcome to My App"
+    to_email = "lustre.jesreal.ustp@gmail.com"
+    html_content = "<html><body><h1>Thank you for signing up!</h1></body></html>"
+
+    success = send_email(subject, to_email, html_content)
+
+    if success:
+        return JsonResponse({"message": "Email sent successfully"})
+    else:
+        return JsonResponse({"error": "Failed to send email"}, status=500)

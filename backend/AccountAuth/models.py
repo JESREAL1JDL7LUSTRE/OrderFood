@@ -77,4 +77,4 @@ class SellerProfile(models.Model):
 
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
-    address = models.JSONField(default=list)  # ✅ Supports multiple addresses
+    address = models.JSONField(default=list)
