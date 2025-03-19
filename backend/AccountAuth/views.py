@@ -1,30 +1,14 @@
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
-from django.views.decorators.csrf import csrf_exempt
 from AccountAuth.serializers import UserSerializer
 from .models import User
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework import viewsets, permissions, generics
-from django.http import JsonResponse
-from .sendEmail import send_email
+from sendEmail import send_email
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from .models import SellerProfile
 
-@login_required
-def become_seller(request):
-    user = request.user  # Get logged-in user
-    seller_group, _ = Group.objects.get_or_create(name='Seller')
-
-    # Condition: Check if the user is at least 18 years old
-    if user.profile.age < 18:
-        return JsonResponse({"message": "You need to be at least 18 years old to become a seller."}, status=400)
-
-    # Check if the user is already a Seller
-    if user.groups.filter(name='Seller').exists():
-        return JsonResponse({"message": "You are already a seller!"}, status=400)
-
-    # Upgrade user to Creator
-    user.groups.add(seller_group)
-    return JsonResponse({"message": "You are now a seller!"})
 
 # User ViewSet
 class UserViewSet(viewsets.ModelViewSet):
@@ -45,14 +29,40 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-def send_test_email(request):
-    subject = "Welcome to My App"
-    to_email = "lustre.jesreal.ustp@gmail.com"
-    html_content = "<html><body><h1>Thank you for signing up!</h1></body></html>"
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def approve_seller(request, token):
+    user_id = verify_token(token)
+    if not user_id:
+        return Response({"message": "Invalid or expired token."}, status=400)
 
-    success = send_email(subject, to_email, html_content)
+    user = get_object_or_404(User, id=user_id)
 
-    if success:
-        return JsonResponse({"message": "Email sent successfully"})
-    else:
-        return JsonResponse({"error": "Failed to send email"}, status=500)
+    if hasattr(user, 'seller_profile'):
+        return Response({"message": "User is already a seller."}, status=400)
+
+    # Create seller profile
+    SellerProfile.objects.create(user=user)
+
+    # Send approval email
+    send_email(user.email, "seller_approval", username=user.username)
+
+    return Response({"message": f"User {user.username} approved as a seller."}, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def deny_seller(request, token):
+    user_id = verify_token(token)
+    if not user_id:
+        return Response({"message": "Invalid or expired token."}, status=400)
+
+    user = get_object_or_404(User, id=user_id)
+
+    if hasattr(user, 'seller_profile'):
+        return Response({"message": "User is already a seller."}, status=400)
+
+    # Send denial email
+    send_email(user.email, "seller_denial", username=user.username)
+
+    return Response({"message": f"User {user.username} was denied seller status."}, status=200)
