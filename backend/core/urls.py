@@ -20,6 +20,7 @@ from django.urls import path, include, re_path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    re_path(r'^auth/', include('djoser.urls')),
-    path('api', include('AccountAuth.urls'))
+    path('api/', include('djoser.urls')),
+    path('api/', include('djoser.urls.jwt')),
+    path('api/', include('AccountAuth.urls'))
 ]

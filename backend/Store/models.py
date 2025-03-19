@@ -1,9 +1,6 @@
 from django.db import models
 from django.db.models import Sum, Avg
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.apps import apps
-BuyerProfile = apps.get_model("AccountAuth", "BuyerProfile")
-SellerProfile = apps.get_model("AccountAuth", "SellerProfile")
 
 class Promotion(models.Model):
     is_discount = models.BooleanField(default=False)
@@ -17,7 +14,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=50, null=False)
-    seller = models.ForeignKey(SellerProfile, on_delete=models.CASCADE)
+    seller = models.ForeignKey("AccountAuth.SellerProfile", on_delete=models.CASCADE)
     promotion = models.ForeignKey(Promotion, null=True, on_delete=models.SET_NULL)  # ✅ Fixed missing on_delete
     category = models.ForeignKey(Category, on_delete=models.CASCADE)  # ✅ Fixed missing on_delete
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -53,7 +50,7 @@ ORDER_STATUS = [
 ]
 
 class Order(models.Model):
-    buyer = models.ForeignKey(BuyerProfile, on_delete=models.CASCADE)
+    buyer = models.ForeignKey("AccountAuth.BuyerProfile", on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default="Pending")
     total_price = models.DecimalField(max_digits=10, decimal_places=2)  # ✅ Fixed field definition
     created_at = models.DateTimeField(auto_now_add=True)
@@ -73,13 +70,13 @@ class OrderItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class WishList(models.Model):
-    buyer = models.ForeignKey(BuyerProfile, on_delete=models.CASCADE)
+    buyer = models.ForeignKey("AccountAuth.BuyerProfile", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="wishlist_items")  # ✅ Fixed capitalization & added related_name
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")  # ✅ Added related_name
-    buyer = models.ForeignKey(BuyerProfile, on_delete=models.CASCADE)
+    buyer = models.ForeignKey("AccountAuth.BuyerProfile", on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     review = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

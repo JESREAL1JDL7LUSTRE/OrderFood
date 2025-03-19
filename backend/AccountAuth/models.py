@@ -2,13 +2,12 @@ from datetime import date
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Sum, Q
-
 from Store.models import Product  
 
 class User(AbstractUser):
     email = models.EmailField(unique=True, blank=False)
     username = models.CharField(unique=True, max_length=150, blank=False)
-    birth_date = models.DateField(blank=False)
+    birth_date = models.DateField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     avatar = models.URLField(blank=True, default="")
@@ -22,13 +21,12 @@ class User(AbstractUser):
         )
 
     def save_oauth_data(self, oauth_response):
-        """Updates avatar URL from OAuth2 response."""
         self.avatar = oauth_response.get("picture", self.avatar)
-        self.save(update_fields=["avatar"])  # ✅ Prevents full save
+        self.save(update_fields=["avatar"])
 
     # Use email as login field
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "birth_date"]
+    REQUIRED_FIELDS = ["username",]
 
     def is_seller(self):
         return self.groups.filter(name="Seller").exists()

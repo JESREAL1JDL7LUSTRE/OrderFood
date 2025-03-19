@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.views.decorators.csrf import csrf_exempt
-from backend.AccountAuth.serializers import UserSerializer
+from AccountAuth.serializers import UserSerializer
 from .models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import viewsets, permissions, generics

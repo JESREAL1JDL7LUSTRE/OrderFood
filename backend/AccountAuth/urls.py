@@ -1,13 +1,14 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
-from .views import UserProfileView, become_seller
+from .views import UserViewSet, UserProfileView, become_seller 
 
 router = DefaultRouter()
-router.register(r'seller', become_seller, basename='seller')
-router.register(r'register', UserProfileView, basename='register')
+router.register(r'users', UserViewSet, basename='users') 
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('profile/', UserProfileView.as_view(), name='use-profile')
+    path('seller/', become_seller, name='become_seller'), 
+    path('profile/', UserProfileView.as_view(), name='user_profile'),
+    re_path(r'^auth/', include('djoser.social.urls')),
 ]

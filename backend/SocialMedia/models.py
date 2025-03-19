@@ -1,5 +1,5 @@
 from django.db import models
-from backend.AccountAuth.models import User
+from AccountAuth.models import User
 
 # Create your models here.
 class PostedContent(models.Model):
