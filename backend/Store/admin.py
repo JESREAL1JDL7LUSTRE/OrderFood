@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Promotion, Category, Product, Recipe, Order, OrderItem,
-    WishList, Review, Delivery
+    WishList, Review
 )
 # Register your models here.
 
@@ -53,9 +53,3 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ("product__name", "buyer__user__email")
     list_filter = ("rating", "created_at")
     ordering = ("-created_at",)
-
-@admin.register(Delivery)
-class DeliveryAdmin(admin.ModelAdmin):
-    list_display = ("id", "order", "company_name", "delivery_person_name", "delivery_person_contact")
-    search_fields = ("company_name", "delivery_person_name")
-    ordering = ("-order__created_at",)

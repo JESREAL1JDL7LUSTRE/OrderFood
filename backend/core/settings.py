@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'Payment',
     'Store',
     'SocialMedia',
+    'Shipping',
 ]
 
 MIDDLEWARE = [

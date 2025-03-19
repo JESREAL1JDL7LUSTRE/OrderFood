@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, UserProfileView, become_seller, send_test_email

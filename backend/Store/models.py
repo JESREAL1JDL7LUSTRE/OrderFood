@@ -81,9 +81,3 @@ class Review(models.Model):
     review = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-class Delivery(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)  # ✅ Fixed missing on_delete
-    company_name = models.CharField(max_length=100)
-    delivery_person_name = models.CharField(max_length=50)
-    delivery_person_contact = models.CharField(max_length=15)  # ✅ Changed from IntegerField to CharField
