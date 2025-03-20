@@ -64,7 +64,7 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "AccountAuth.authentication.CustomJWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -158,9 +158,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = getenv('DJANGO_CORS_ALLOWED_ORIGINS', '127.0.0.1,localhost').split(',')
+CORS_ALLOWED_ORIGINS = getenv('DJANGO_CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000').split(',')
 
-CORS_ALLOW_CREDENTIALS = getenv('CORS_ALLOW_CREDENTIALS', 'TRUE') == 'False'
+CORS_ALLOW_CREDENTIALS = True
 
 AUTH_USER_MODEL = "AccountAuth.User"
 
@@ -181,6 +181,8 @@ DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'LOGOUT_ON_PASSWORD_CHANGE': True,
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
     'TOKEN_MODEL': None,
 }
 
@@ -190,3 +192,11 @@ ANYMAIL = {
 }
 DEFAULT_FROM_EMAIL = getenv("DEFAULT_FROM_EMAIL")
 BREVO_API_URL = getenv("BREVO_API_URL")
+
+AUTH_COOKIE = 'access'
+AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 10
+AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 24 * 3
+AUTH_COOKIE_SECURE = getenv('DJANGO_COOKIE_SECURE', 'True') == 'True'
+AUTH_COOKIE_HTTPONLY = True
+AUTH_COOKIE_SAMESITE = 'Lax'
+AUTH_COOKIE_PATH = '/'

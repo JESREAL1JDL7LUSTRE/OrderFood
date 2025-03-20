@@ -4,7 +4,7 @@ from .models import User, BuyerProfile, SellerProfile, Address
 # Register your models here.
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("email", "username", "birth_date", "age", "phone_number", "is_active", "is_staff", "is_seller", "is_buyer", "updated_at")
+    list_display = ("email", "username", "birth_date", "age", "phone_number", "is_active", "is_staff", "is_seller", "updated_at")
     search_fields = ("email", "username")
     list_filter = ("is_active", "is_staff", "groups")
     ordering = ("email",)

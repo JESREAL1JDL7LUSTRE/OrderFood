@@ -1,5 +1,5 @@
 from datetime import date
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.db.models import Sum, Q
 from Store.models import Product  
@@ -29,11 +29,13 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ["username",]
 
     def is_seller(self):
-        return self.groups.filter(name="Seller").exists()
-
-    def is_buyer(self):
-        return self.groups.filter(name="Buyer").exists()
-
+        return hasattr(self, "sellerprofile")
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Save user first
+        buyer_group, _ = Group.objects.get_or_create(name="Buyer")  # Ensure group exists
+        self.groups.add(buyer_group)  # Add user to Buyer group
+        
     def is_admin(self):
         return self.is_superuser
 
